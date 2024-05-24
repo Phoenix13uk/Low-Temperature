@@ -2,7 +2,6 @@ blueprint:
   name: Low temperature detection & notification for all temperature sensors
   description: Regularly test all sensors with 'temperature' device-class for crossing a certain level threshold and if so execute an action.
   domain: automation
-  #source_url: https://github.com/gmlupatelli/blueprints_repo/blob/master/low_battery_notification/low_battery_notification.yaml
   source_url: https://github.com/Phoenix13uk/Low-Temperature/blob/main/low_temperature_notification.yaml
 
   # Blueprint Inputs
