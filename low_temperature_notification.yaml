@@ -8,16 +8,16 @@ blueprint:
   # Blueprint Inputs
   input:
     threshold:
-      name: Battery warning level threshold
-      description: Battery sensors below threshold are assumed to be low-battery (as well as binary battery sensors with value 'on').
+      name: temperature warning level threshold
+      description: temperature sensors below threshold are assumed to be low-temperature.
       default: 20
       selector:
         number:
           min: 5.0
           max: 100.0
-          unit_of_measurement: '%'
+          unit_of_measurement: '°C'
           mode: slider
-          step: 5.0
+          step: 1.0
 
     time:
       name: Time to test on
@@ -71,12 +71,12 @@ blueprint:
 
     exclude:
       name: Excluded Sensors
-      description: Battery sensors (e.g. smartphone) to exclude from detection. Only entities are supported, areas and devices must be expanded!
+      description: temperature sensors (e.g. smartphone) to exclude from detection. Only entities are supported, areas and devices must be expanded!
       default: {}
       selector:
         target:
           entity:
-            device_class: battery
+            device_class: temperature
 
     actions:
       name: Actions
@@ -102,7 +102,7 @@ variables:
 
   sensors: >-
     {% set result = namespace(sensors=[]) %}
-    {% for state in states.sensor | selectattr('attributes.device_class', '==', 'battery') %}
+    {% for state in states.sensor | selectattr('attributes.device_class', '==', 'temperature') %}
       {% if exclude.entity_id is defined %}
         {% if 0 <= state.state | int(-1) < threshold | int and not state.entity_id in exclude.entity_id %}
           {% set result.sensors = result.sensors + [state.name ~ ' (' ~ state.state ~ ' %)'] %}
@@ -113,7 +113,7 @@ variables:
         {% endif %}
       {% endif %}
     {% endfor %}
-    {% for state in states.binary_sensor | selectattr('attributes.device_class', '==', 'battery') | selectattr('state', '==', 'on') %}
+    {% for state in states.binary_sensor | selectattr('attributes.device_class', '==', 'temperature') | selectattr('state', '==', 'on') %}
       {% if exclude.entity_id is defined %}
         {% if not state.entity_id in exclude.entity_id %}
           {% set result.sensors = result.sensors + [state.name] %}
